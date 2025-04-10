@@ -59,21 +59,16 @@ namespace PR4_Partners_CRUD
                     MessageBoxIcon.Error);
                 return;
             }
-
-            var id = (short)dataGridViewTypesPartners.SelectedRows[0].Cells["Id"].Value;
             using (var tempContext = new Models.AppContext())
             {
-                var type = tempContext.TypesOfPartners.Find(id);
+                var type = tempContext.TypesOfPartners.Find((short)dataGridViewTypesPartners.SelectedRows[0].Cells["Id"].Value);
                 
-                if (type != null)
+                using (FormCreate formCreate = new FormCreate(type))
                 {
-                    using (FormCreate formCreate = new FormCreate(type))
+                    if (formCreate.ShowDialog() == DialogResult.OK)
                     {
-                        if (formCreate.ShowDialog() == DialogResult.OK)
-                        {
-                            tempContext.SaveChanges();
-                            LoadData();
-                        }
+                        tempContext.SaveChanges();
+                        LoadData();
                     }
                 }
             }
@@ -96,14 +91,11 @@ namespace PR4_Partners_CRUD
 
             if (result == DialogResult.Yes)
             {
-                var id = (short)dataGridViewTypesPartners.SelectedRows[0].Cells["Id"].Value;
-                var type = db.TypesOfPartners.Find(id);
-                if (type != null)
-                {
+                var type = db.TypesOfPartners.Find((short)dataGridViewTypesPartners.SelectedRows[0].Cells["Id"].Value);
                     db.TypesOfPartners.Remove(type);
                     db.SaveChanges();
                     LoadData();
-                }
+                
             }
         }
     }
